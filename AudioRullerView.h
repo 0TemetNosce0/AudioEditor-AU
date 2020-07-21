@@ -3,10 +3,10 @@
 **************************************************************************/
 
 #pragma once
-#include "RulerScene.h"
+//#include "RulerScene.h"
 
 #include <QGraphicsView>
-#include <crulerbase.h>
+//#include <crulerbase.h>
 
 //class AudioRullerView : public QGraphicsView /*,public CRulerBase*/
 //{

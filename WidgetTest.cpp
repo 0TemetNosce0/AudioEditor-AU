@@ -28,8 +28,9 @@ WidgetTest::WidgetTest(QWidget *parent) : QWidget(parent)
         } else {
             view->scale(0.9, 1);
         }
+
         cur = value;
-        qDebug() << value;
+        qDebug() << value<<view->mapToScene(QPoint(0,0));
     });
     slider1->setValue(1);
     slider2 = new QSlider(this);

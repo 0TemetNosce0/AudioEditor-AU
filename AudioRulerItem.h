@@ -24,4 +24,10 @@ protected:
 private:
     QRectF mRect;
     qreal duration = 63.5;
+    int maxMark = 60;//实际
+    int minMark = 60;//实际
+    qreal preScale = 1.0;
+    int type = 1;//125
+    qreal typeF = 1;
+    //1,2,5;
 };
