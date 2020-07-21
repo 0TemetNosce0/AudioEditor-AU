@@ -25,7 +25,7 @@ public:
     //    virtual void keyPressEvent(QKeyEvent *event);
     //    virtual void keyReleaseEvent(QKeyEvent *event);
     //    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    //    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+        virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     //    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     //    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     //    virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
@@ -41,6 +41,7 @@ public:
 //    void wheelEvent(QWheelEvent *event);
     virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
     virtual void drawForeground(QPainter *painter, const QRectF &rect) override;
+         virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 //private:
     AudioTimelineScene *scene = nullptr;
     AudioPeakItem * peakItem= nullptr;
@@ -58,6 +59,7 @@ public:
     qreal scaleItem_y = 0;
 
 
+    void updateValue();
     qreal withDuration = 200;//pix
     qreal duration = 62.5;//s
 };
