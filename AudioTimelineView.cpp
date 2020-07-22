@@ -20,29 +20,27 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
     //   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     //   setStyleSheet("padding:0px;border:0px");
     setStyleSheet("padding:0px;border:0px");
+    //  setCacheMode(QGraphicsView::CacheBackground);//缓存模式
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate); //场景重绘更新方式
+
+    rulerItem = new AudioRulerItem();
+    rulerItem->setRect(QRectF(0, 0, withDuration, 60));
+    rulerItem->setPos(0, 0);
+    //    rulerItem->setZValue(2);
+    scene->addItem(rulerItem);
+
     peakItem = new AudioPeakItem();
-    peakItem->setRect(QRectF(0, 0, scene_rect.width(), 200));
-    peakItem->setPos(0, audioPeakItem_y);
+    peakItem->setRect(QRectF(0, 0, withDuration, 200));
+    peakItem->setPos(0, 60);
     //    peakItem->setZValue(1);
     scene->addItem(peakItem);
 
     scaleItem = new AudioScaleItem();
-    scaleItem->setPos(0, scaleItem_y);
+    scaleItem->setPos(0, 20);
+    scaleItem->setRect(QRectF(0, 0, 10, 200 + 60 - 20));
     scaleItem->setZValue(1);
     scene->addItem(scaleItem);
 
-    rulerItem = new AudioRulerItem();
-    rulerItem->setRect(QRectF(0, 0, scene_rect.width(), 60));
-    rulerItem->setPos(0, audioPeakItem_y);
-    //    rulerItem->setZValue(2);
-    scene->addItem(rulerItem);
-
-    scaleItem1 = new AudioScaleItem();
-    scaleItem1->setPos(0, scaleItem_y);
-    scaleItem1->setZValue(1);
-    //    scene->addItem(scaleItem1);
-    //    connect()
-    //    scene->setZvalue(0);
     //        setScale(QPointF(1.0,1.0));
 
     timer = new QTimer;
@@ -55,7 +53,7 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
             QPointF tmp = scaleItem->pos();
             //        scaleItem->setX(scaleItem->pos().x() + 2);
             horizontalScrollBar()->setValue(horizontalScrollBar()->value() + 2); //这里他有还原之前的了。
-            //            qDebug() << "-------------2-" << scaleItem->pos();
+            qDebug() << "-------------2-" << scaleItem->pos();
             scaleItem->setX(tmp /*scaleItem->pos()*/.x() + 0.5);
             qDebug() << "-------------3-" << scaleItem->pos();
             //        scaleItem->update();
@@ -63,6 +61,8 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
         }
     });
 }
+
+void AudioTimelineView::leaveEvent(QEvent *event) { qDebug() << "AudioTimelineViewleaveEvent"; }
 
 void AudioTimelineView::drawBackground(QPainter *painter, const QRectF &rect)
 {
@@ -78,33 +78,26 @@ void AudioTimelineView::drawForeground(QPainter *painter, const QRectF &rect)
 
 void AudioTimelineView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->pos().x() + 20 > this->rect().width()) {
-
-        //        if (scene->selectedItems().size() > 0) {
-        //            //        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-        //            //        this->translate(-700,0);
-        //            this->horizontalScrollBar()->setValue(this->horizontalScrollBar()->value() + 10);
-        //            //        this->setCursor();
-        //            // QMatrix matrix;
-        //            // matrix.translate(-100, 1);
-        //            // matrix.rotate(rotateSlider->value());
-
-        //            // this->setMatrix(matrix);
+    if (event->pos().x() > this->rect().width()) {
         qDebug() << "AudioTimelineView:mouseMoveEvent1" << scaleItem->pos();
         timer->start();
-        // QGraphicsView::mouseMoveEvent(event);
         return;
-        //        }
     }
     timer->stop();
     qDebug() << "AudioTimelineView:mouseMoveEvent" << scaleItem->pos();
     QGraphicsView::mouseMoveEvent(event);
 }
 
-void AudioTimelineView::updateValue()
-{
-    int v1 = this->horizontalScrollBar()->value();
-    this->horizontalScrollBar()->setValue(v1 + 1);
+void AudioTimelineView::play() {
+
+
+    scaleItem->setPos(scaleItem->pos().x()+1,scaleItem->pos().y());
+
+
+}
+
+void AudioTimelineView::pause() {
+
 }
 
 AudioTimelineScene::AudioTimelineScene() {}

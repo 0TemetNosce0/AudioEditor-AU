@@ -10,7 +10,9 @@ AudioRulerItem::AudioRulerItem()
 {
     setFlags(/*QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsGeometryChanges
                 |*/
-             QGraphicsItem::ItemSendsScenePositionChanges|QGraphicsItem::ItemUsesExtendedStyleOption /*|QGraphicsItem::ItemIgnoresTransformations*/);
+             //             QGraphicsItem::ItemSendsScenePositionChanges |
+             QGraphicsItem::
+                 ItemUsesExtendedStyleOption /*|ItemClipsToShape*/ /*|QGraphicsItem::ItemIgnoresTransformations*/);
 
     setAcceptHoverEvents(true);
 }
@@ -26,10 +28,10 @@ void AudioRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
     painter->save();
     painter->setPen(Qt::NoPen);
     painter->setBrush(Qt::darkCyan);
-    painter->drawRect(exposedRect);
+    painter->drawRect(this->boundingRect() /*exposedRect*/);
     painter->restore();
-
-    //    painter->save();
+    //    return ;
+    painter->save();
 
     // 当前放缩倍数;
     qreal scaleFactor = painter->matrix().m11();
@@ -108,19 +110,12 @@ void AudioRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
     qreal val3 = test * val2;
     for (qreal i = val3 /*exposedRect.x() * scaleFactor*/; i < item->exposedRect.right() * scaleFactor; i += test) {
         painter->drawLine(QPointF(i, 0), QPointF(i, item->exposedRect.height()));
-        painter->drawText(QPointF(i, 0), QString("%1").arg(i / scaleFactor * duration / mRect.width()));
+        painter->drawText(QPointF(i, 0 + 10), QString("%1").arg(i / scaleFactor * duration / mRect.width()));
         test1++;
     }
 
     qDebug() << "AudioRulerItem" << item->exposedRect << test1 << item->exposedRect.right() << test << val3;
-    //    painter->restore();
+    painter->restore();
 }
-QVariant AudioRulerItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    if (change == ItemPositionChange && scene()) {
-        // value is the new position.
-        QPointF newPos = value.toPointF();
-    }
-    return QGraphicsItem::itemChange(change, value);
-}
+
 void AudioRulerItem::setRect(const QRectF &rect) { mRect = rect; }

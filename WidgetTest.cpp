@@ -6,13 +6,10 @@
 #include <QScrollBar>
 WidgetTest::WidgetTest(QWidget *parent) : QWidget(parent)
 {
-
-    //
-
     view = new AudioTimelineView(this);
 
-//    view->setGeometry(0, 0, 200, 200);
-    view->setGeometry(0, 0, 800, 300);
+    //    view->setGeometry(0, 0, 200, 200);
+//    view->setGeometry(0, 0, 800, 300);
     slider1 = new QSlider(Qt::Horizontal, this);
     slider1->setGeometry(10, 310, 400, 20);
     slider1->setMaximum(100);
@@ -30,9 +27,20 @@ WidgetTest::WidgetTest(QWidget *parent) : QWidget(parent)
         }
 
         cur = value;
-        qDebug() << value<<view->mapToScene(QPoint(0,0));
+        qDebug() << value << view->mapToScene(QPoint(0, 0));
     });
     slider1->setValue(1);
-    slider2 = new QSlider(this);
-    slider2->setGeometry(10, 340, 400, 20);
+    btn = new QPushButton(this);
+    btn->setText("play");
+    btn->setGeometry(10, 340, 400, 20);
+    playTimeTest.setInterval(20);
+    connect(btn, &QPushButton::clicked, [this]() {
+        if (playTimeTest.isActive()) {
+            playTimeTest.stop();
+            view->pause();
+        } else {
+            playTimeTest.start();
+        }
+    });
+    connect(&playTimeTest, &QTimer::timeout, [this]() { view->play(); });
 }

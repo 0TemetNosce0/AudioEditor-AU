@@ -39,6 +39,7 @@ public:
     //    void paintEvent(QPaintEvent *event) override;
     //    void mousePressEvent(QMouseEvent *event) override;
     //    void wheelEvent(QWheelEvent *event);
+    virtual void leaveEvent(QEvent *event) override;
     virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
     virtual void drawForeground(QPainter *painter, const QRectF &rect) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
@@ -47,7 +48,6 @@ public:
     AudioPeakItem *peakItem = nullptr;
     AudioScaleItem *scaleItem = nullptr;
     AudioRulerItem *rulerItem = nullptr;
-    AudioScaleItem *scaleItem1 = nullptr;
     int value = 0;
     int max;
     int min;
@@ -60,7 +60,11 @@ public:
     qreal scaleItem_y = 0;
 
     QTimer *timer;
-    void updateValue();
-    qreal withDuration = 200; // pix
+    qreal withDuration = 600; // pix
     qreal duration = 62.5;    // s
+
+    //
+
+    void play();
+    void pause();
 };

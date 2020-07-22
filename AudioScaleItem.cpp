@@ -13,8 +13,7 @@ AudioScaleItem::AudioScaleItem()
 {
     setAcceptHoverEvents(true);
     setFlags(QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsSelectable |
-             QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
-
+             QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsScenePositionChanges);
 }
 
 QRectF AudioScaleItem::boundingRect() const { return mRect; }
@@ -24,9 +23,17 @@ void AudioScaleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
 
     qDebug() << "AudioScaleItem:paint";
     painter->setBrush(Qt::darkGreen);
-    painter->drawRect(0, 0, 20, 20);
+    painter->drawRect(0, 0, mRect.width(), mRect.width());
     painter->setPen(Qt::darkGreen);
-    painter->drawLine(QPoint(10, 20), QPoint(10, 60));
+    painter->drawLine(QPointF(mRect.width() / 2, mRect.width()), QPoint(mRect.width() / 2, mRect.height()));
+}
+
+QPainterPath AudioScaleItem::shape() const
+{
+    QPainterPath path;
+        path.addRect(0, 0, mRect.width(), mRect.width());
+//    path.addRect(mRect);
+    return path;
 }
 
 void AudioScaleItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -48,13 +55,24 @@ void AudioScaleItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     qDebug() << "AudioScaleItem:hoverLeaveEvent" << event->pos();
     return QGraphicsItem::hoverLeaveEvent(event);
 }
+
 QVariant AudioScaleItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == ItemPositionChange && scene()) {
-        // value is the new position.
-        QPointF newPos = value.toPointF();
-            qDebug()<<"=====================itemChange"<<newPos;
-    }
 
+    if (change == ItemPositionChange && scene()) {
+        //        // value is the new position.
+
+        QPointF newPos = value.toPointF();
+        //        //        QRectF rect = scene()->sceneRect();
+        //        //        if (!rect.contains(newPos)) {
+        //        //            // Keep the item inside the scene rect.
+        //        //            newPos.setX(0/*qMin(rect.right(), qMax(newPos.x(), rect.left()))*/);
+        //        //            newPos.setY(qMin(rect.bottom(), qMax(newPos.y(), rect.top())));
+        //        //            return newPos;
+        //        //        }
+        newPos.setY(20);
+        return QGraphicsItem::itemChange(change, newPos);
+    }
     return QGraphicsItem::itemChange(change, value);
 }
+void AudioScaleItem::setRect(const QRectF &rect) { mRect = rect; }

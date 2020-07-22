@@ -6,7 +6,9 @@
 #pragma once
 #include "AudioTimelineView.h"
 
+#include <QPushButton>
 #include <QSlider>
+#include <QTimer>
 #include <QWidget>
 
 class WidgetTest:public QWidget
@@ -17,7 +19,8 @@ public:
     WidgetTest( QWidget * parent =nullptr);
     AudioTimelineView * view ;
     QSlider* slider1;
-    QSlider* slider2;
+    QPushButton* btn;
+    QTimer  playTimeTest;
     int cur = 1;
 };
 
