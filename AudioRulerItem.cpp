@@ -10,7 +10,7 @@ AudioRulerItem::AudioRulerItem()
 {
     setFlags(/*QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsGeometryChanges
                 |*/
-             QGraphicsItem::ItemUsesExtendedStyleOption /*|QGraphicsItem::ItemIgnoresTransformations*/);
+             QGraphicsItem::ItemSendsScenePositionChanges|QGraphicsItem::ItemUsesExtendedStyleOption /*|QGraphicsItem::ItemIgnoresTransformations*/);
 
     setAcceptHoverEvents(true);
 }
@@ -115,5 +115,12 @@ void AudioRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
     qDebug() << "AudioRulerItem" << item->exposedRect << test1 << item->exposedRect.right() << test << val3;
     //    painter->restore();
 }
-
+QVariant AudioRulerItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionChange && scene()) {
+        // value is the new position.
+        QPointF newPos = value.toPointF();
+    }
+    return QGraphicsItem::itemChange(change, value);
+}
 void AudioRulerItem::setRect(const QRectF &rect) { mRect = rect; }

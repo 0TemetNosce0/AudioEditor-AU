@@ -4,13 +4,13 @@
 #pragma once
 
 #include "AudioPeakItem.h"
-#include "AudioScaleItem.h"
 #include "AudioRulerItem.h"
+#include "AudioScaleItem.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
-class AudioTimelineScene:public QGraphicsScene
+class AudioTimelineScene : public QGraphicsScene
 {
 public:
     AudioTimelineScene();
@@ -25,28 +25,29 @@ public:
     //    virtual void keyPressEvent(QKeyEvent *event);
     //    virtual void keyReleaseEvent(QKeyEvent *event);
     //    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-        virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     //    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     //    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     //    virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
     //    virtual void inputMethodEvent(QInputMethodEvent *event);
 };
-class AudioTimelineView:public QGraphicsView
+class AudioTimelineView : public QGraphicsView
 {
     Q_OBJECT
 public:
     explicit AudioTimelineView(QWidget *parent = nullptr);
-//    void paintEvent(QPaintEvent *event) override;
-//    void mousePressEvent(QMouseEvent *event) override;
-//    void wheelEvent(QWheelEvent *event);
+    //    void paintEvent(QPaintEvent *event) override;
+    //    void mousePressEvent(QMouseEvent *event) override;
+    //    void wheelEvent(QWheelEvent *event);
     virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
     virtual void drawForeground(QPainter *painter, const QRectF &rect) override;
-         virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-//private:
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    // private:
     AudioTimelineScene *scene = nullptr;
-    AudioPeakItem * peakItem= nullptr;
-    AudioScaleItem * scaleItem = nullptr;
+    AudioPeakItem *peakItem = nullptr;
+    AudioScaleItem *scaleItem = nullptr;
     AudioRulerItem *rulerItem = nullptr;
+    AudioScaleItem *scaleItem1 = nullptr;
     int value = 0;
     int max;
     int min;
@@ -58,8 +59,8 @@ public:
     qreal rulerItem_y = 0;
     qreal scaleItem_y = 0;
 
-
+    QTimer *timer;
     void updateValue();
-    qreal withDuration = 200;//pix
-    qreal duration = 62.5;//s
+    qreal withDuration = 200; // pix
+    qreal duration = 62.5;    // s
 };

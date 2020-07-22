@@ -21,6 +21,7 @@ protected:
     //    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     //    virtual void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
 
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 private:
     QRectF mRect;
     qreal duration = 63.5;

@@ -9,7 +9,13 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QPainter>
-AudioScaleItem::AudioScaleItem() { setFlags(QGraphicsItem::ItemIgnoresTransformations| QGraphicsItem::ItemIsMovable); }
+AudioScaleItem::AudioScaleItem()
+{
+    setAcceptHoverEvents(true);
+    setFlags(QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsSelectable |
+             QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
+
+}
 
 QRectF AudioScaleItem::boundingRect() const { return mRect; }
 
@@ -26,9 +32,29 @@ void AudioScaleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
 void AudioScaleItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    qDebug()<<"AudioScaleItem:mouseMoveEvent"<<event->pos();
+    qDebug() << "AudioScaleItem:mouseMoveEvent" << event->pos();
 
-    emit updateValue();
-    return ;
     QGraphicsItem::mouseMoveEvent(event);
+}
+
+void AudioScaleItem::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
+{
+    qDebug() << "AudioScaleItem:dragMoveEvent" << event->pos();
+    return QGraphicsItem::dragMoveEvent(event);
+}
+
+void AudioScaleItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    qDebug() << "AudioScaleItem:hoverLeaveEvent" << event->pos();
+    return QGraphicsItem::hoverLeaveEvent(event);
+}
+QVariant AudioScaleItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionChange && scene()) {
+        // value is the new position.
+        QPointF newPos = value.toPointF();
+            qDebug()<<"=====================itemChange"<<newPos;
+    }
+
+    return QGraphicsItem::itemChange(change, value);
 }
