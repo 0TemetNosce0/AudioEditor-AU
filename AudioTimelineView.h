@@ -43,6 +43,7 @@ public:
     virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
     virtual void drawForeground(QPainter *painter, const QRectF &rect) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
+      void scrollContentsBy(int dx, int dy) override;
     // private:
     AudioTimelineScene *scene = nullptr;
     AudioPeakItem *peakItem = nullptr;

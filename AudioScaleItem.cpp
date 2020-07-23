@@ -12,6 +12,7 @@
 AudioScaleItem::AudioScaleItem()
 {
     setAcceptHoverEvents(true);
+    setAcceptDrops(true);
     setFlags(QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsSelectable |
              QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsScenePositionChanges);
 }
@@ -44,6 +45,13 @@ void AudioScaleItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseMoveEvent(event);
 }
 
+void AudioScaleItem::dropEvent(QGraphicsSceneDragDropEvent *event)
+{
+    qDebug() << "AudioScaleItem:dropEvent" << event->pos();
+
+    QGraphicsItem::dropEvent(event);
+}
+
 void AudioScaleItem::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
     qDebug() << "AudioScaleItem:dragMoveEvent" << event->pos();
@@ -71,7 +79,19 @@ QVariant AudioScaleItem::itemChange(GraphicsItemChange change, const QVariant &v
         //        //            return newPos;
         //        //        }
         newPos.setY(20);
+        qDebug()<<"AudioScaleItem itemChange"<<newPos;
         return QGraphicsItem::itemChange(change, newPos);
+    }
+    if(change ==ItemSelectedChange){
+
+     qDebug()<<"AudioScaleItem ItemSelectedChange";
+    }
+    if(change ==ItemPositionHasChanged){
+
+        qDebug()<<"AudioScaleItem ItemPositionHasChanged";
+         QPointF newPos = value.toPointF();
+         newPos.setX(newPos.x()-0.5);
+        return newPos;
     }
     return QGraphicsItem::itemChange(change, value);
 }

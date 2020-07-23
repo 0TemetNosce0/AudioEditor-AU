@@ -21,6 +21,7 @@ protected:
     //    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     //    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     //    virtual void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
+        virtual void dropEvent(QGraphicsSceneDragDropEvent *event) override;
     virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
     // virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event)override;
     // virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event)override;
