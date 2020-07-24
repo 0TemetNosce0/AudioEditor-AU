@@ -12,7 +12,7 @@
 AudioScaleItem::AudioScaleItem()
 {
     setAcceptHoverEvents(true);
-    setAcceptDrops(true);
+//    setAcceptDrops(true);
     setFlags(QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsSelectable |
              QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsScenePositionChanges);
 }
@@ -23,6 +23,7 @@ void AudioScaleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
 {
 
     qDebug() << "AudioScaleItem:paint";
+//    painter->setOpacity(0.1);
     painter->setBrush(Qt::darkGreen);
     painter->drawRect(0, 0, mRect.width(), mRect.width());
     painter->setPen(Qt::darkGreen);

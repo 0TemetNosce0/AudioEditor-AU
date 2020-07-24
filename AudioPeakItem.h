@@ -13,8 +13,6 @@ public:
 
     // QGraphicsItem interface
 
-
-    QRectF rect() const;
     void setRect(const QRectF &rect);
 
 protected:

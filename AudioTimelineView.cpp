@@ -10,7 +10,7 @@
 AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
 {
     scene = new AudioTimelineScene();
-    scene->setSceneRect(QRectF(0, 0, withDuration, 200));
+    scene->setSceneRect(QRectF(0, 0, withDuration, 260));
     //
     setScene(scene);
     QRectF scene_rect = scene->sceneRect();
@@ -35,6 +35,13 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
     //    peakItem->setZValue(1);
     scene->addItem(peakItem);
 
+
+    selectItem = new AudioSelectItem();
+    selectItem->setRect(QRectF(0, 0, withDuration, 260));
+    selectItem->setPos(0, 0);
+    //    peakItem->setZValue(1);
+    scene->addItem(selectItem);
+
     scaleItem = new AudioScaleItem();
     scaleItem->setPos(0, 20);
     scaleItem->setRect(QRectF(0, 0, 10, 200 + 60 - 20));
@@ -46,25 +53,33 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
     timer = new QTimer;
     timer->setInterval(80);
     connect(timer, &QTimer::timeout, [this]() {
-        qDebug() << scene->selectedItems().size();
-        //        scaleItem->scene()->clearSelection();
-        //        scaleItem->setSelected(false);
+        //        qDebug() << scene->selectedItems().size();
         if (scene->selectedItems().size() > 0) {
-            //            scaleItem->setActive(false);
-            //            scaleItem->setFocus(Qt::FocusReason focusReason = Qt::OtherFocusReason);
-            //            scaleItem->clearFocus();
-
-            //            QPointF tmp = scaleItem->pos();
-            //        scaleItem->setX(scaleItem->pos().x() + 2);
             horizontalScrollBar()->setValue(horizontalScrollBar()->value() + val1); //这里他有还原之前的了。
-                                                                                 //            scaleItem->scroll(2,1);
-            //            qDebug() << "-------------2-" << scaleItem->pos();
-            //            scaleItem->setX(tmp /*scaleItem->pos()*/.x() - 0.5);
-            //            qDebug() << "-------------3-" << scaleItem->pos();
-            //        scaleItem->update();
-            //            update();
         }
     });
+}
+
+void AudioTimelineView::mousePressEvent(QMouseEvent *event)
+{
+//    if((event->pos().x()<mapFromScene(startSelect+durationSelect,0).x()+5)&&(event->pos().x()>mapFromScene(startSelect+durationSelect,0).x()-5)){
+//       mode  = 2;
+////        setCursor(Qt::SizeHorCursor);
+
+//        return ;
+//    }
+    QPointF sceneP = mapToScene(event->pos());
+    startSelect = sceneP.x() /**duration/withDuration*/;
+    durationSelect = 0;
+    mode = 1;
+    //    qDebug()<<startSelect<<sceneP.x();
+    QGraphicsView::mousePressEvent(event);
+}
+
+void AudioTimelineView::mouseReleaseEvent(QMouseEvent *event)
+{
+    mode = 0;
+    QGraphicsView::mouseReleaseEvent(event);
 }
 
 void AudioTimelineView::leaveEvent(QEvent *event) { qDebug() << "AudioTimelineViewleaveEvent"; }
@@ -77,30 +92,52 @@ void AudioTimelineView::drawBackground(QPainter *painter, const QRectF &rect)
 
 void AudioTimelineView::drawForeground(QPainter *painter, const QRectF &rect)
 {
-
+//    auto v1 = mapFromScene(startSelect, 0);
+//    auto v2 = mapFromScene(durationSelect + startSelect, 0);
+//    painter->setBrush(Qt::magenta);
+//    painter->drawRect(v1.x(), 0, v2.x() - v1.x(), this->height());
     QGraphicsView::drawForeground(painter, rect);
 }
 
 void AudioTimelineView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->pos().x() + 40 > this->rect().width()) {
-        //        qDebug() << "AudioTimelineView:mouseMoveEvent1" << scaleItem->pos();
-        //         scaleItem->setAcceptedMouseButtons(Qt::NoButton);
-        //        scaleItem->setFlag(QGraphicsItem::ItemIsMovable, false);
-        qDebug()<<"AudioTimelineView:mouseMoveEvent"<<(event->pos().x()-this->rect().width())/10;
-//        timer->setInterval(1/(event->pos().x()+40-this->rect().width())*10);
-        val1 = (event->pos().x()+40-this->rect().width())/10;
-        if (!timer->isActive()) {
-        timer->start();
+
+
+//    if((mode == 1) &&(event->pos().x()<mapFromScene(startSelect+durationSelect,0).x()+5)&&(event->pos().x()>mapFromScene(startSelect+durationSelect,0).x()-5)){
+////        mode  = 2;
+//        setCursor(Qt::SizeHorCursor);
+
+//        return ;
+//    }
+//    if(mode ==2){
+//        QPointF sceneP = mapToScene(event->pos());
+//        durationSelect = sceneP.x() - startSelect;
+//        update();
+//          return;
+//    }
+// setCursor(Qt::ArrowCursor);
+//    if (mode == 1) {
+//        QPointF sceneP = mapToScene(event->pos());
+//        durationSelect = sceneP.x() - startSelect;
+//        update();
+//        //    invalidateScene(this->rect(),QGraphicsScene::ForegroundLayer);
+//        return;
+//    }
+    if (event->pos().x() + 20 > this->rect().width()) {
+        if (scaleItem->isSelected()) {
+            val1 = (event->pos().x() + 20 - this->rect().width()) / 10;
+            if (!timer->isActive()) {
+                timer->start();
+            }
+            return;
         }
-         return;
     }
     if (timer->isActive()) {
         timer->stop();
-//        QGraphicsView::mouseMoveEvent(event);
-//        peakItem->setPos(0/*this->rect().width() - 20*/, 60);
+        //        QGraphicsView::mouseMoveEvent(event);
+        //        peakItem->setPos(0/*this->rect().width() - 20*/, 60);
 
-//        return;
+        //        return;
         //        scaleItem->setFlag(QGraphicsItem::ItemIsMovable, true);
         //        qDebug() << "_______________1" << scaleItem->pos();
         //        scaleItem->setX(event->x());
@@ -109,11 +146,11 @@ void AudioTimelineView::mouseMoveEvent(QMouseEvent *event)
         //    scaleItem->setAcceptedMouseButtons(Qt::LeftButton);
         //        event->setLocalPos();
         //        QGraphicsView::mouseMoveEvent(event);
-//                return;
+        //                return;
     }
-//    qDebug() << "AudioTimelineView:mouseMoveEvent" << scaleItem->pos();
-//    qDebug() << this->pos() << event->pos() << event->globalPos() << event->localPos() << event->windowPos()
-//             << event->screenPos();
+    //    qDebug() << "AudioTimelineView:mouseMoveEvent" << scaleItem->pos();
+    //    qDebug() << this->pos() << event->pos() << event->globalPos() << event->localPos() << event->windowPos()
+    //             << event->screenPos();
 
     QGraphicsView::mouseMoveEvent(event);
 }
@@ -135,19 +172,19 @@ AudioTimelineScene::AudioTimelineScene() {}
 void AudioTimelineScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 
-//    qDebug() << "AudioTimelineScene mouseMoveEvent" << event->pos() << event->lastPos() << event->lastScreenPos()
-//             << event->screenPos() << this->width();
-//    QList<QGraphicsItem *> items = selectedItems();
-//    if (items.size() > 0) {
-//        qDebug() << items.at(0)->pos();
-//    }
+    //    qDebug() << "AudioTimelineScene mouseMoveEvent" << event->pos() << event->lastPos() << event->lastScreenPos()
+    //             << event->screenPos() << this->width();
+    //    QList<QGraphicsItem *> items = selectedItems();
+    //    if (items.size() > 0) {
+    //        qDebug() << items.at(0)->pos();
+    //    }
     //    if()
 
-//    QPoint pot = this->views().at(0)->mapFromScene(event->screenPos());
-//    if (pot.x() + 20 > this->views().at(0)->width()) {
+    //    QPoint pot = this->views().at(0)->mapFromScene(event->screenPos());
+    //    if (pot.x() + 20 > this->views().at(0)->width()) {
 
-//        qDebug() << pot << this->views().at(0)->mapToScene(event->screenPos());
-//        return;
-//    }
+    //        qDebug() << pot << this->views().at(0)->mapToScene(event->screenPos());
+    //        return;
+    //    }
     QGraphicsScene::mouseMoveEvent(event);
 }

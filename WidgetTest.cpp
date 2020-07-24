@@ -6,8 +6,9 @@
 #include <QScrollBar>
 WidgetTest::WidgetTest(QWidget *parent) : QWidget(parent)
 {
+    this->setGeometry(200,200,1000,800);
     view = new AudioTimelineView(this);
-
+    view->move(60,60);
     //    view->setGeometry(0, 0, 200, 200);
 //    view->setGeometry(0, 0, 800, 300);
     slider1 = new QSlider(Qt::Horizontal, this);
