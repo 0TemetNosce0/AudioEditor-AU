@@ -63,8 +63,9 @@ public:
     QTimer *timer;
     qreal withDuration = 600; // pix
     qreal duration = 62.5;    // s
-
+    qreal val1  =1;
     //
+
 
     void play();
     void pause();

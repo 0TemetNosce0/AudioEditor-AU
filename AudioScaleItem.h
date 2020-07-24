@@ -27,6 +27,11 @@ protected:
     // virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event)override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+//    virtual void focusInEvent(QFocusEvent *event);
+//    virtual void focusOutEvent(QFocusEvent *event);
+//    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+//    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+//    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event)override;
 
 private:
     QRectF mRect;

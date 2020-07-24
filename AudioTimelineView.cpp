@@ -56,7 +56,7 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
 
             //            QPointF tmp = scaleItem->pos();
             //        scaleItem->setX(scaleItem->pos().x() + 2);
-            horizontalScrollBar()->setValue(horizontalScrollBar()->value() + 2); //这里他有还原之前的了。
+            horizontalScrollBar()->setValue(horizontalScrollBar()->value() + val1); //这里他有还原之前的了。
                                                                                  //            scaleItem->scroll(2,1);
             //            qDebug() << "-------------2-" << scaleItem->pos();
             //            scaleItem->setX(tmp /*scaleItem->pos()*/.x() - 0.5);
@@ -83,30 +83,37 @@ void AudioTimelineView::drawForeground(QPainter *painter, const QRectF &rect)
 
 void AudioTimelineView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->pos().x() + 20 > this->rect().width()) {
-//        qDebug() << "AudioTimelineView:mouseMoveEvent1" << scaleItem->pos();
+    if (event->pos().x() + 40 > this->rect().width()) {
+        //        qDebug() << "AudioTimelineView:mouseMoveEvent1" << scaleItem->pos();
         //         scaleItem->setAcceptedMouseButtons(Qt::NoButton);
         //        scaleItem->setFlag(QGraphicsItem::ItemIsMovable, false);
+        qDebug()<<"AudioTimelineView:mouseMoveEvent"<<(event->pos().x()-this->rect().width())/10;
+//        timer->setInterval(1/(event->pos().x()+40-this->rect().width())*10);
+        val1 = (event->pos().x()+40-this->rect().width())/10;
+        if (!timer->isActive()) {
         timer->start();
-
-        //        return;
+        }
+         return;
     }
     if (timer->isActive()) {
         timer->stop();
+//        QGraphicsView::mouseMoveEvent(event);
+//        peakItem->setPos(0/*this->rect().width() - 20*/, 60);
+
+//        return;
         //        scaleItem->setFlag(QGraphicsItem::ItemIsMovable, true);
-//        qDebug() << "_______________1" << scaleItem->pos();
+        //        qDebug() << "_______________1" << scaleItem->pos();
         //        scaleItem->setX(event->x());
 
-//        qDebug() << "_______________2" << scaleItem->pos();
+        //        qDebug() << "_______________2" << scaleItem->pos();
         //    scaleItem->setAcceptedMouseButtons(Qt::LeftButton);
         //        event->setLocalPos();
         //        QGraphicsView::mouseMoveEvent(event);
-        //        return;
+//                return;
     }
-    qDebug() << "AudioTimelineView:mouseMoveEvent" << scaleItem->pos();
-    qDebug() << this->pos()<<event->pos()<<event->globalPos()<<event->localPos()
-             <<      event->windowPos()<<  event->screenPos();
-
+//    qDebug() << "AudioTimelineView:mouseMoveEvent" << scaleItem->pos();
+//    qDebug() << this->pos() << event->pos() << event->globalPos() << event->localPos() << event->windowPos()
+//             << event->screenPos();
 
     QGraphicsView::mouseMoveEvent(event);
 }
@@ -128,19 +135,19 @@ AudioTimelineScene::AudioTimelineScene() {}
 void AudioTimelineScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    qDebug() << "AudioTimelineScene mouseMoveEvent" << event->pos() << event->lastPos() << event->lastScreenPos()
-             << event->screenPos()<<this->width();
-    QList<QGraphicsItem *> items = selectedItems();
-    if (items.size() > 0) {
-        qDebug() << items.at(0)->pos();
-    }
+//    qDebug() << "AudioTimelineScene mouseMoveEvent" << event->pos() << event->lastPos() << event->lastScreenPos()
+//             << event->screenPos() << this->width();
+//    QList<QGraphicsItem *> items = selectedItems();
+//    if (items.size() > 0) {
+//        qDebug() << items.at(0)->pos();
+//    }
     //    if()
 
-    QPoint pot = this->views().at(0)->mapFromScene(event->screenPos());
-    if (pot.x() + 20 > this->views().at(0)->width()) {
+//    QPoint pot = this->views().at(0)->mapFromScene(event->screenPos());
+//    if (pot.x() + 20 > this->views().at(0)->width()) {
 
-        qDebug() << pot<<this->views().at(0)->mapToScene(event->screenPos());
-        return ;
-    }
+//        qDebug() << pot << this->views().at(0)->mapToScene(event->screenPos());
+//        return;
+//    }
     QGraphicsScene::mouseMoveEvent(event);
 }
