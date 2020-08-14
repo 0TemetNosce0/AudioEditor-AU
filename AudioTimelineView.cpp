@@ -6,6 +6,7 @@
 #include <QDropEvent>
 #include <QScrollBar>
 #include <QTimer>
+#include <WavThumb.h>
 #include <qgraphicssceneevent.h>
 AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
 {
@@ -35,7 +36,6 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
     //    peakItem->setZValue(1);
     scene->addItem(peakItem);
 
-
     selectItem = new AudioSelectItem();
     selectItem->setRect(QRectF(0, 0, withDuration, 260));
     selectItem->setPos(0, 0);
@@ -55,6 +55,9 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
     connect(timer, &QTimer::timeout, [this]() {
         //        qDebug() << scene->selectedItems().size();
         if (scene->selectedItems().size() > 0) {
+            //获取peak
+
+            updatePeak(horizontalScrollBar()->value());
             horizontalScrollBar()->setValue(horizontalScrollBar()->value() + val1); //这里他有还原之前的了。
         }
     });
@@ -62,12 +65,12 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
 
 void AudioTimelineView::mousePressEvent(QMouseEvent *event)
 {
-//    if((event->pos().x()<mapFromScene(startSelect+durationSelect,0).x()+5)&&(event->pos().x()>mapFromScene(startSelect+durationSelect,0).x()-5)){
-//       mode  = 2;
-////        setCursor(Qt::SizeHorCursor);
+    //    if((event->pos().x()<mapFromScene(startSelect+durationSelect,0).x()+5)&&(event->pos().x()>mapFromScene(startSelect+durationSelect,0).x()-5)){
+    //       mode  = 2;
+    ////        setCursor(Qt::SizeHorCursor);
 
-//        return ;
-//    }
+    //        return ;
+    //    }
     QPointF sceneP = mapToScene(event->pos());
     startSelect = sceneP.x() /**duration/withDuration*/;
     durationSelect = 0;
@@ -92,37 +95,37 @@ void AudioTimelineView::drawBackground(QPainter *painter, const QRectF &rect)
 
 void AudioTimelineView::drawForeground(QPainter *painter, const QRectF &rect)
 {
-//    auto v1 = mapFromScene(startSelect, 0);
-//    auto v2 = mapFromScene(durationSelect + startSelect, 0);
-//    painter->setBrush(Qt::magenta);
-//    painter->drawRect(v1.x(), 0, v2.x() - v1.x(), this->height());
+    //    auto v1 = mapFromScene(startSelect, 0);
+    //    auto v2 = mapFromScene(durationSelect + startSelect, 0);
+    //    painter->setBrush(Qt::magenta);
+    //    painter->drawRect(v1.x(), 0, v2.x() - v1.x(), this->height());
     QGraphicsView::drawForeground(painter, rect);
 }
 
 void AudioTimelineView::mouseMoveEvent(QMouseEvent *event)
 {
 
+    //    if((mode == 1)
+    //    &&(event->pos().x()<mapFromScene(startSelect+durationSelect,0).x()+5)&&(event->pos().x()>mapFromScene(startSelect+durationSelect,0).x()-5)){
+    ////        mode  = 2;
+    //        setCursor(Qt::SizeHorCursor);
 
-//    if((mode == 1) &&(event->pos().x()<mapFromScene(startSelect+durationSelect,0).x()+5)&&(event->pos().x()>mapFromScene(startSelect+durationSelect,0).x()-5)){
-////        mode  = 2;
-//        setCursor(Qt::SizeHorCursor);
-
-//        return ;
-//    }
-//    if(mode ==2){
-//        QPointF sceneP = mapToScene(event->pos());
-//        durationSelect = sceneP.x() - startSelect;
-//        update();
-//          return;
-//    }
-// setCursor(Qt::ArrowCursor);
-//    if (mode == 1) {
-//        QPointF sceneP = mapToScene(event->pos());
-//        durationSelect = sceneP.x() - startSelect;
-//        update();
-//        //    invalidateScene(this->rect(),QGraphicsScene::ForegroundLayer);
-//        return;
-//    }
+    //        return ;
+    //    }
+    //    if(mode ==2){
+    //        QPointF sceneP = mapToScene(event->pos());
+    //        durationSelect = sceneP.x() - startSelect;
+    //        update();
+    //          return;
+    //    }
+    // setCursor(Qt::ArrowCursor);
+    //    if (mode == 1) {
+    //        QPointF sceneP = mapToScene(event->pos());
+    //        durationSelect = sceneP.x() - startSelect;
+    //        update();
+    //        //    invalidateScene(this->rect(),QGraphicsScene::ForegroundLayer);
+    //        return;
+    //    }
     if (event->pos().x() + 20 > this->rect().width()) {
         if (scaleItem->isSelected()) {
             val1 = (event->pos().x() + 20 - this->rect().width()) / 10;
@@ -163,11 +166,36 @@ void AudioTimelineView::scrollContentsBy(int dx, int dy)
     //    scaleItem->setX(scaleItem->pos().x()+dx);
 }
 
+qreal AudioTimelineView::getDuration() const { return duration; }
+
+void AudioTimelineView::setDuration(const qreal &value)
+{
+
+    duration = value;
+    rulerItem->setTypeF();
+    //    rulerItem->update();
+}
+
+void AudioTimelineView::updatePeak(double start)
+{
+    WavThumb wav;
+    WavThumb::Param para;
+    para.trackStartSample = start * 44100/512;
+    para.trackDurationSample = duration * 44100/512;
+    para.visibleWidth = withDuration;
+    peakItem->data = wav.getWavThumb(para);
+}
+
 void AudioTimelineView::play() { scaleItem->setPos(scaleItem->pos().x() + 1, scaleItem->pos().y()); }
 
 void AudioTimelineView::pause() {}
 
 AudioTimelineScene::AudioTimelineScene() {}
+
+AudioTimelineView *AudioTimelineScene::timelineview() const
+{
+    return reinterpret_cast<AudioTimelineView *>(views().at(0));
+}
 
 void AudioTimelineScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {

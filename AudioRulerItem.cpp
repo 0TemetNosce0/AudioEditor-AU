@@ -2,8 +2,11 @@
 **   Created by TemetNosce 2020/7/20
 **************************************************************************/
 #include "AudioRulerItem.h"
+#include "AudioTimelineView.h"
 
 #include <QDebug>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 AudioRulerItem::AudioRulerItem()
@@ -21,6 +24,8 @@ QRectF AudioRulerItem::boundingRect() const { return mRect; }
 
 void AudioRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *)
 {
+    auto timelineScene = reinterpret_cast<AudioTimelineScene *>(scene());
+    qreal duration = timelineScene->timelineview()->duration;
     QRectF exposedRect = item->exposedRect;
     qDebug() << "AudioRulerItem1:" << painter->matrix().m11() << painter->matrix().dx() << exposedRect;
 
@@ -38,54 +43,57 @@ void AudioRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
     // 1s对应的宽度
     qreal val1 = mRect.width() * scaleFactor / duration;
     qreal test = type * val1 * typeF;
-    if (preScale > scaleFactor) {
+    if (preScale < scaleFactor) { //放大
+        switch (type) {
+        case 1: {
+
+            if (test > minWidth * 2) {
+                type = 5;
+                typeF = typeF / 10;
+                test = type * val1 * typeF;
+            }
+            break;
+        }
+        case 2: {
+            if (test > minWidth * 2) {
+                type = 1;
+                test = type * val1 * typeF;
+            }
+            break;
+        }
+        case 5: {
+            if (test > minWidth * 2) {
+                type = 2;
+                test = type * val1 * typeF;
+            }
+            break;
+        }
+        }
+    } else if (preScale > scaleFactor) {
+
         switch (type) {
         case 1:
-            if (test < 40) {
+            if (test < minWidth) {
                 type = 2;
-
                 test = type * val1 * typeF;
             }
             break;
         case 2:
-            if (test < 40) {
+            if (test < minWidth) {
                 type = 5;
                 test = type * val1 * typeF;
             }
             break;
         case 5:
-            if (test < 40) {
+            if (test < minWidth) {
                 type = 1;
                 typeF = typeF * 10;
                 test = type * val1 * typeF;
             }
             break;
         }
-    } else if (preScale < scaleFactor) {
-
-        switch (type) {
-        case 1:
-            if (test > 80) {
-                type = 5;
-                typeF = typeF / 10;
-                test = type * val1 * typeF;
-            }
-            break;
-        case 2:
-            if (test > 80) {
-                type = 1;
-                test = type * val1 * typeF;
-            }
-            break;
-        case 5:
-            if (test > 80) {
-                type = 2;
-                test = type * val1 * typeF;
-            }
-            break;
-        }
     }
-
+    qDebug() << "-----" << test << val1 << typeF << type;
     preScale = scaleFactor;
 
     // Tahoma
@@ -111,6 +119,24 @@ void AudioRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
     for (qreal i = val3 /*exposedRect.x() * scaleFactor*/; i < item->exposedRect.right() * scaleFactor; i += test) {
         painter->drawLine(QPointF(i, 0), QPointF(i, item->exposedRect.height()));
         painter->drawText(QPointF(i, 0 + 10), QString("%1").arg(i / scaleFactor * duration / mRect.width()));
+        switch (type) {
+        case 1:
+            painter->drawLine(QPointF(i + test / 2, item->exposedRect.height() / 2),
+                              QPointF(i + test / 2, item->exposedRect.height()));
+            break;
+        case 2:
+            painter->drawLine(QPointF(i + test / 2, item->exposedRect.height() / 2),
+                              QPointF(i + test / 2, item->exposedRect.height()));
+            break;
+        case 5:
+            for (qreal j = 0; j < 5;) {
+                j++;
+                painter->drawLine(QPointF(i + test / 5 * j, item->exposedRect.height() / 2),
+                                  QPointF(i + test / 5* j, item->exposedRect.height()));
+            }
+            break;
+        }
+
         test1++;
     }
 
@@ -119,3 +145,36 @@ void AudioRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
 }
 
 void AudioRulerItem::setRect(const QRectF &rect) { mRect = rect; }
+
+void AudioRulerItem::setTypeF()
+{
+    auto timelineScene = reinterpret_cast<AudioTimelineScene *>(scene());
+    qreal duration = timelineScene->timelineview()->duration;
+    // 1s对应的宽度
+    qreal val1 = mRect.width() * 1 /*scaleFactor*/ / duration;
+    qreal test = type * val1 * typeF;
+
+    if (test < minWidth) {
+        while (true) {
+            test = type * val1 * typeF;
+
+            if (test > minWidth) {
+                test = type * val1 * typeF;
+                break;
+            }
+            typeF = typeF * 10;
+        }
+    } else {
+        while (true) {
+
+            if (test < minWidth) {
+
+                test = type * val1 * typeF;
+                break;
+            }
+            typeF = typeF / 10;
+        }
+    }
+
+    //    typeF = value;
+}

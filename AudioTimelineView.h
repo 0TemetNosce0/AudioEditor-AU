@@ -10,11 +10,13 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
-
+class AudioTimelineView;
 class AudioTimelineScene : public QGraphicsScene
 {
 public:
     AudioTimelineScene();
+    AudioTimelineView*  timelineview() const;
+
     //        virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
     //    virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     //    virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
@@ -56,7 +58,6 @@ public:
     int max;
     int min;
     int start = 0;
-
     qreal mark_h;
     qreal ruler_y;
     qreal audioPeakItem_y = 0;
@@ -74,4 +75,8 @@ public:
     int mode  =0;
     void play();
     void pause();
+    qreal getDuration() const;
+    void setDuration(const qreal &value);
+
+    void updatePeak(double start);
 };

@@ -190,3 +190,13 @@ QGraphicsItem::mapFromItem() - 其他图元 -> 本图元
 ```
 
 https://blog.csdn.net/lxj362343/article/details/106780692
+
+
+
+
+
+#  定点缩放
+
+https://www.jianshu.com/p/05f680cf1f88
+
+https://blog.csdn.net/yangzijiangtou/article/details/104636033
