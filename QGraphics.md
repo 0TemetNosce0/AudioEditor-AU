@@ -200,3 +200,35 @@ https://blog.csdn.net/lxj362343/article/details/106780692
 https://www.jianshu.com/p/05f680cf1f88
 
 https://blog.csdn.net/yangzijiangtou/article/details/104636033
+
+# 拖动  鼠标点缩放
+
+https://blog.csdn.net/xi__q/article/details/84289935
+
+
+
+# GraphicsView translate
+
+```
+ setTransformationAnchor(QGraphicsView::NoAnchor);
+translate(10,0);//看到scen左边的的，
+滚动条：最值会改变
+```
+
+#translate
+
+```
+   setTransformationAnchor(QGraphicsView::NoAnchor);
+    auto end = mapToScene(QPoint(this->width(), 0));
+    auto start = mapToScene(QPoint(0, 0));
+    qDebug()<<horizontalScrollBar()->value()没变
+    //maximum()<<horizontalScrollBar()->minimum()<<<horizontalScrollBar()->maximum()<<horizontalScrollBar()->minimum()<< horizontalScrollBar()->pageStep();
+    this->translate(end.x() - start.x(), 0);
+    //horizontalScrollBar()->value()没变
+    //maximum()   minimum()改变了了
+```
+
+#
+
+在QGraphicsItem中mouseMoveEvent中调用view 的scale或者tranlete会崩 不知道为啥
+

@@ -44,7 +44,7 @@ AudioTimelineView::AudioTimelineView(QWidget *parent) : QGraphicsView(parent)
 
     scaleItem = new AudioScaleItem();
     scaleItem->setPos(0, 20);
-    scaleItem->setRect(QRectF(0, 0, 10, 200 + 60 - 20));
+    scaleItem->setRect(QRectF(10/2.0, 0, 10, 200 + 60 - 20));
     scaleItem->setZValue(1);
     scene->addItem(scaleItem);
 
