@@ -6,14 +6,17 @@
 #include "AudioPeakItem.h"
 #include "AudioRulerItem.h"
 #include "AudioScaleItem.h"
+#include "AudioSelectItem.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
-
+class AudioTimelineView;
 class AudioTimelineScene : public QGraphicsScene
 {
 public:
     AudioTimelineScene();
+    AudioTimelineView*  timelineview() const;
+
     //        virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
     //    virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     //    virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
@@ -37,7 +40,8 @@ class AudioTimelineView : public QGraphicsView
 public:
     explicit AudioTimelineView(QWidget *parent = nullptr);
     //    void paintEvent(QPaintEvent *event) override;
-    //    void mousePressEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
     //    void wheelEvent(QWheelEvent *event);
     virtual void leaveEvent(QEvent *event) override;
     virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
@@ -49,11 +53,11 @@ public:
     AudioPeakItem *peakItem = nullptr;
     AudioScaleItem *scaleItem = nullptr;
     AudioRulerItem *rulerItem = nullptr;
+    AudioSelectItem * selectItem = nullptr;
     int value = 0;
     int max;
     int min;
     int start = 0;
-
     qreal mark_h;
     qreal ruler_y;
     qreal audioPeakItem_y = 0;
@@ -63,9 +67,16 @@ public:
     QTimer *timer;
     qreal withDuration = 600; // pix
     qreal duration = 62.5;    // s
-
+    qreal val1  = 1;
     //
 
+    qreal startSelect;//s
+    qreal durationSelect;//s
+    int mode  =0;
     void play();
     void pause();
+    qreal getDuration() const;
+    void setDuration(const qreal &value);
+
+    void updatePeak(double start);
 };

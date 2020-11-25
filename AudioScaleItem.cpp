@@ -12,7 +12,7 @@
 AudioScaleItem::AudioScaleItem()
 {
     setAcceptHoverEvents(true);
-    setAcceptDrops(true);
+//    setAcceptDrops(true);
     setFlags(QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsSelectable |
              QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsScenePositionChanges);
 }
@@ -23,6 +23,7 @@ void AudioScaleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
 {
 
     qDebug() << "AudioScaleItem:paint";
+//    painter->setOpacity(0.1);
     painter->setBrush(Qt::darkGreen);
     painter->drawRect(0, 0, mRect.width(), mRect.width());
     painter->setPen(Qt::darkGreen);
@@ -32,17 +33,16 @@ void AudioScaleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *it
 QPainterPath AudioScaleItem::shape() const
 {
     QPainterPath path;
-        path.addRect(0, 0, mRect.width(), mRect.width());
-//    path.addRect(mRect);
+    path.addRect(0, 0, mRect.width(), mRect.width());
+    //    path.addRect(mRect);
     return path;
 }
 
 void AudioScaleItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-
-    qDebug() << "AudioScaleItem:mouseMoveEvent" << event->pos();
-
-    QGraphicsItem::mouseMoveEvent(event);
+    //    qDebug() << "AudioScaleItem:mouseMoveEvent" << event->pos();
+    setPos(event->scenePos());
+    //    QGraphicsItem::mouseMoveEvent(event);
 }
 
 void AudioScaleItem::dropEvent(QGraphicsSceneDragDropEvent *event)
@@ -79,20 +79,20 @@ QVariant AudioScaleItem::itemChange(GraphicsItemChange change, const QVariant &v
         //        //            return newPos;
         //        //        }
         newPos.setY(20);
-        qDebug()<<"AudioScaleItem itemChange"<<newPos;
+        qDebug() << "AudioScaleItem itemChange" << newPos;
         return QGraphicsItem::itemChange(change, newPos);
     }
-    if(change ==ItemSelectedChange){
+    if (change == ItemSelectedChange) {
 
-     qDebug()<<"AudioScaleItem ItemSelectedChange";
+        qDebug() << "AudioScaleItem ItemSelectedChange";
     }
-    if(change ==ItemPositionHasChanged){
+    //    if(change ==ItemPositionHasChanged){
 
-        qDebug()<<"AudioScaleItem ItemPositionHasChanged";
-         QPointF newPos = value.toPointF();
-         newPos.setX(newPos.x()-0.5);
-        return newPos;
-    }
+    //        qDebug()<<"AudioScaleItem ItemPositionHasChanged";
+    //         QPointF newPos = value.toPointF();
+    //         newPos.setX(newPos.x()-0.5);
+    //        return newPos;
+    //    }
     return QGraphicsItem::itemChange(change, value);
 }
 void AudioScaleItem::setRect(const QRectF &rect) { mRect = rect; }

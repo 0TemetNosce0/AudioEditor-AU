@@ -3,6 +3,8 @@
 **************************************************************************/
 #pragma once
 
+#include "WavThumb.h"
+
 #include <QGraphicsItem>
 #include <QPainter>
 
@@ -13,10 +15,9 @@ public:
 
     // QGraphicsItem interface
 
-
-    QRectF rect() const;
     void setRect(const QRectF &rect);
 
+    std::vector<MinMaxValue>  data;
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
 
