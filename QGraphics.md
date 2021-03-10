@@ -1,3 +1,5 @@
+https://blog.csdn.net/qq_17813937/article/details/51370106
+
 # QGraphicsView 透明背景和边框
 
  view->setStyleSheet("padding:0px;border:0px"); 
@@ -232,3 +234,28 @@ translate(10,0);//看到scen左边的的，
 
 在QGraphicsItem中mouseMoveEvent中调用view 的scale或者tranlete会崩 不知道为啥
 
+
+
+# 模态
+
+
+
+
+
+```
+ item->setFlags(ItemIsPanel);
+ item->setPanelModality(QGraphicsItem::SceneModal);
+scene->addItem(item);
+```
+
+
+
+
+
+# setFlag(ItemHasNoContents);
+
+不会调用paint；
+
+# paint 模糊问题
+
+如果坐标位置在屋里像素的小数位置就会模糊。
